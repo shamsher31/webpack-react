@@ -5,9 +5,12 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const port = process.env.PORT || 3001;
 
 module.exports = {
-  entry: ['react-hot-loader/patch', './src/index.js'],
+  entry: {
+    vendor: ['semantic-ui-react'],
+    app: ['react-hot-loader/patch', './src/index.js']
+  },
   output: {
-    filename: 'bundle.[hash].js',
+    filename: '[name].[hash].js',
     publicPath: '/'
   },
   devtool: 'inline-source-map',
@@ -45,6 +48,10 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new DashboardPlugin({ port: port }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: ['vendor'],
+      minChunks: Infinity
+    })
   ],
   devServer: {
     host: 'localhost',
